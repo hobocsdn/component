@@ -53,7 +53,10 @@ class Log4j {
     debug(...args) {
         this.exec("debug", ...args);
     }
-    exec(level, msg, tag) {
+    exec(...args) {
+        let tag = '';
+        let level = arguments[0];
+        let msg = Array.from(arguments).slice(1);
         let logLevel = levelMap[this.__config.level] || levelMap["debug"];
 
         if (logLevel > levelMap[level])
@@ -67,7 +70,7 @@ class Log4j {
             needLog = true;
         }
         if (needLog) {
-            console ? console[level](msg) : !0;
+            console ? console[level].apply(console, msg) : !0;
             if (msg instanceof Error && this.__config.post) {
                 this.post(msg); //上报服务器
             }
