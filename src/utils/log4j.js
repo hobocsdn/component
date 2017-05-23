@@ -6,7 +6,7 @@ let merge = (...sources) => Object.assign(...sources);
  *
  * @type {{error: number, warn: number, info: number, log: number, debug: number}}
  */
-let level = {
+let levelMap = {
     "error": 4,
     "warn": 3,
     "info": 2,
@@ -24,39 +24,39 @@ let __config = {
 };
 
 class Log4j {
-    constructor() {
+    constructor(...args) {
         this.version = VERSION;
-        this.__config = __config;
+        this.config(...args);
     }
     config(...args) {
-            if (arguments.length == 0)
-                return tthi.__config;
-            this.__config = merge(__config, ...args);
-        }
-        /*
-         * 默认两个参数
-         * @param {String} msg 输出信息
-         * @param {String} tag 标记
-         */
+        if (arguments.length == 0)
+            return this.__config;
+        this.__config = merge(__config, ...args);
+    }
+    /*
+     * 默认两个参数
+     * @param {String} msg 输出信息
+     * @param {String} tag 标记
+     */
     log(...args) {
         this.exec("log", ...args);
     }
-    info(...arg) {
+    info(...args) {
         this.exec("info", ...args);
     }
-    warn(...arg) {
+    warn(...args) {
         this.exec("warn", ...args);
     }
-    error(...arg) {
+    error(...args) {
         this.exec("error", ...args);
     }
-    debug(...arg) {
+    debug(...args) {
         this.exec("debug", ...args);
     }
     exec(level, msg, tag) {
-        let logLevel = level[this.__config.level] || level["debug"];
+        let logLevel = levelMap[this.__config.level] || levelMap["debug"];
 
-        if (logLevel > Level[level])
+        if (logLevel > levelMap[level])
             return;
         let needLog = false;
         //过滤打印信息
