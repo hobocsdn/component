@@ -1,62 +1,73 @@
 'use strict';
-
 var gulp = require('gulp');
-// 管理gulp所有插件
-var $ = require('gulp-load-plugins')();
+var browserSync = require('browser-sync');
 
-var browserSync = require("browser-sync").create(); //热键--实现自动刷新功能
 
-var isProduct = false;
-var buildTask = isProduct ? ['build'] : []
-/* gulp 任务
- - sass 编译
- - es6 编译打包
- - 启动热刷新服务
- - 监听文件变化
- - 清除文件
-*/
+var clean = require('gulp-clean');//清除文件
+var babelify = require('babelify');
+var browserify = require('browserify');
+var vinylSource = require('vinyl-source-stream');
 
-// -----启动服务
-gulp.task('serve', buildTask, function() {
-    browserSync.init({
-        server:{
-            baseDir: ["./dist"]
-        },
-        proxy:"http://localhost:3008/"
+
+var eslint = require('gulp-eslint');
+
+gulp.task("copyIndex", function(){
+  gulp.src("src/index.html")
+   .pipe(gulp.dest("./dist"))
+   .pipe(browserSync.reload({stream: true}));
+});
+
+gulp.task('browserSync', function(){
+    browserSync({
+       server: {
+          baseDir: './dist'
+       },
+       port:"3008"
     });
-    gulp.watch("scss/**/*.scss", ['sass']);
-    gulp.watch("dist/*.*").on("change", browserSync.reload);
+});
+
+gulp.task("watchFiles", function(){
+   gulp.watch('src/index.html', ['copyIndex']);
+   gulp.watch('src/**/*.js', ['babelIt','copyIndex']);
 });
 
 
-gulp.task('build',function() {
-
+// es6 => es5
+gulp.task("babelIt", function(){
+    browserify({
+      entries: 'src/index.js',
+      debug: true
+    })
+    .transform(babelify,{
+      presets:["es2015"]
+    })
+    .bundle()
+    .pipe(vinylSource('index.js'))
+    .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('watch', function() {
-
+gulp.task('eslint', function () {
+  return gulp.src(['./src/**/*.js'])
+    .pipe(eslint({
+      "rules": {
+        "camelcase": [2, { "properties": "always" }],
+        "comma-dangle": [2, "never"],
+        "semi": [2, "always"],
+        "quotes": [2, "single"],
+        "strict": [2, "global"]
+      },
+      "parser": "babel-eslint"
+    }))
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
 
 
-gulp.task('clean',function(){
-  return gulp.src(['dist/**/*.*'], {read: false})
-      .pipe($.clean());
+//处理src 目录下的所有scss
+
+gulp.task("clean", function(){
+    gulp.src("./dist/",{read: false})
+     .pipe(clean());
 });
 
-gulp.task('sass', function() {
-    return gulp.src("src/**/*.scss")
-        .pipe($.sass())
-        .pipe(gulp.dest("dist/css"))
-        .pipe(reload({stream: true}));
-});
-
-gulp.task('es6', function() {
-  return gulp.src('src/index.js')
-    .pipe($.plumber())
-    .pipe($.babel())
-    .pipe(gulp.dest('dist/'));
-});
-
-// gulp.task('default', ['clean'],function(){
-//   gulp.start('serve');
-// });
+gulp.task("default", ["copyIndex", "babelIt" ,"browserSync", "watchFiles"]);
