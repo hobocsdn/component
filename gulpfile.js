@@ -21,7 +21,7 @@ gulp.task("copyIndex", function () {
 gulp.task('browserSync', function () {
   browserSync({
     server: {
-      baseDir: './dist'
+      baseDir: './src' //使用Canary 直接调试 无需打包
     },
     port: "3008"
   });

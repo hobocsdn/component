@@ -2,8 +2,9 @@
 
 <head>
   <title>es6-practice</title>
+  <meta charset="utf-8" />
   <!-- <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"/> -->
-  <script src="index.js"></script>
+  <!--<script src="index.js"></script>-->
   <style>
     html,
     body {
@@ -14,18 +15,34 @@
     .siderBar {
       position: absolute;
       background: #f5f5f5;
-      width: 180px;
+      width: 220px;
       height: 100%;
       overflow: hidden;
+      padding-left: 25px;
+      margin-right: 18px;
+    }
+
+    .siderBar ol {
+      margin: 20px;
+      padding-left: 30px;
+      padding-top: 0;
+    }
+
+    .siderBar ol li {
+      list-style: none;
+      font-size: 14px;
+      line-height: 1.6;
+      color: dodgerblue;
     }
 
     .bodyer {
-      margin-left: 180px;
+      margin-left: 220px;
       height: 100%;
       overflow-y: auto;
       overflow-x: hidden;
       background-color: #f2f2f2;
     }
+
     .spliter {
       background: #888888;
       height: 100%;
@@ -41,12 +58,34 @@
 
 <body>
   <div class="siderBar">
-      <div class="spliter"></div>
+    <div>
+      <h3>javascript插件入门</h3>
+      <span>作者:hobo</span>
+    </div>
+    <ol>
+      <li>动画</li>
+      <li>动画</li>
+      <li>动画</li>
+      <li>动画</li>
+      <li>动画</li>
+    </ol>
+    <div class="spliter"></div>
   </div>
 
   <div class="bodyer">
 
   </div>
+
+  <script type="module">
+    /*按需加载 使用的模块*/ 
+    import $ from './utils/dom.js'; 
+    import utils from './utils/utils.js'; 
+    console.log($); 
+    console.log(utils);
+    import Component from './main.js';
+    new Component();
+    //new Component()
+  </script>
 </body>
 
 </html>

@@ -23,7 +23,7 @@ let __config = {
   debug: 0, //是否开启调试模式。如果开启调试模式，则可以在console中输入window.log4j进行调试；
   level: "debug", //日志级别，error(4)、warn(3)、info(2)、log(1)、debug(0),级别越高，输出的日志越少。
   tagFilter: "", //日志tag筛选,正则表达式字符串
-  postContextInfo:false, //是否提交环境数据
+  postContextInfo: false, //是否提交环境数据
   postUrl: "", //当发生异常是是否post到服务器/异常信息提交的服务器地址
   appenders: { //输出信息前缀
     categoryName: "log_file",
@@ -80,11 +80,11 @@ class Log4j {
       console ? console[level](msgPrefix, ...args) : !0;
       //error 级别上报服务器
       let info = [...args];
-      let isExitError = info.some(function(item) {
+      let isExitError = info.some(function (item) {
         return item instanceof Error;
       })
       if (isExitError && this.__config.postUrl) {
-        console.info(new Date(), "this info will be send to sever.",...args);
+        console.info(new Date(), "this info will be send to sever.", ...args);
         this.post(...args); //上报服务器
       }
     }
@@ -105,7 +105,7 @@ class Log4j {
     }
     if (msg instanceof Error) {
       body = merge(body, {
-        exceptionTime:this.getMsgPrefix("error"),
+        exceptionTime: this.getMsgPrefix("error"),
         name: msg.name,
         message: msg.message,
         stack: msg.stack

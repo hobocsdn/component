@@ -1,27 +1,37 @@
+/*
+  简易版jquery
+  1. 选择器
+  2.样式操作: addClass removeClass hasClass
+  3. 事件注册: on off once 
+  4. each 遍历 
+*/
+
+
 const SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
 const MOZ_HACK_REGEXP = /^moz([A-Z])/;
 const ieVersion = Number(document.documentMode);
 const extend = (...sources) => Object.assign(...sources);
 
-const trim = function(string) {
+const trim = function (string) {
   return (string || '').replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '');
 };
+
 /* istanbul ignore next */
-const camelCase = function(name) {
-  return name.replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
+const camelCase = function (name) {
+  return name.replace(SPECIAL_CHARS_REGEXP, function (_, separator, letter, offset) {
     return offset ? letter.toUpperCase() : letter;
   }).replace(MOZ_HACK_REGEXP, 'Moz$1');
 };
 
-const on = (function() {
+const on = (function () {
   if (document.addEventListener) {
-    return function(element, event, handler) {
+    return function (element, event, handler) {
       if (element && event && handler) {
         element.addEventListener(event, handler, false);
       }
     };
   } else {
-    return function(element, event, handler) {
+    return function (element, event, handler) {
       if (element && event && handler) {
         element.attachEvent('on' + event, handler);
       }
@@ -30,15 +40,15 @@ const on = (function() {
 })();
 
 /* istanbul ignore next */
-const off = (function() {
+const off = (function () {
   if (document.removeEventListener) {
-    return function(element, event, handler) {
+    return function (element, event, handler) {
       if (element && event) {
         element.removeEventListener(event, handler, false);
       }
     };
   } else {
-    return function(element, event, handler) {
+    return function (element, event, handler) {
       if (element && event) {
         element.detachEvent('on' + event, handler);
       }
@@ -47,8 +57,8 @@ const off = (function() {
 })();
 
 /* istanbul ignore next */
-const once = function(el, event, fn) {
-  var listener = function() {
+const once = function (el, event, fn) {
+  var listener = function () {
     if (fn) {
       fn.apply(this, arguments);
     }
@@ -111,7 +121,7 @@ function removeClass(el, cls) {
   }
 };
 
-const css = function(element, styleName, value) {
+const css = function (element, styleName, value) {
   if (!element || !styleName) return;
 
   if (typeof styleName === 'object') {
@@ -130,26 +140,92 @@ const css = function(element, styleName, value) {
   }
 };
 
-class $ {
+
+const merge = function (first, second) {
+  let len = +second.length,
+    j = 0,
+    i = first.length;
+
+  for (; j < len; j++) {
+    first[i++] = second[j];
+  }
+  first.length = i;
+  return first;
+}
+
+
+class Jquery {
   constructor() {
-    this.init();
   }
-  static init() {
-    this.ele = document.querySelector(ele);
-  }
-  on(element, styleName, value) {
-    return on(this, styleName, value)
+  init(selector) {
+    this.length = 0;
+    if (!selector) {
+      return this;
+    } else {
+      let elem = document.querySelectorAll(selector);
+      if (elem !== null) {
+        this.merge(this, elem);
+        return this;
+      }
+    }
   }
 }
 
+Jquery.fn = Jquery.prototype
 
-export default {
-  $,
-  on,
-  off,
-  once,
-  addClass,
-  removeClass,
-  hasClass,
-  css
+Object.assign(Jquery.fn, {
+  each(cb) {
+    let self = this;
+    let len = this.length, i = 0;
+    for (; i < len; i++) {
+      cb.call(this, this[i]);
+    }
+  },
+  on(event, handler) {
+    return this.each(function (ele) {
+      on(ele, event, handler);
+    });
+  },
+  off(event, handler) {
+    return this.each(function (ele) {
+      on(ele, event, handler);
+    });
+  },
+  once(event, handler) {
+    return this.each(function (ele) {
+      once(ele, event, handler);
+    });
+  },
+  addClass(event, handler) {
+    return this.each(function (ele) {
+      addClass(ele, event, handler);
+    });
+  },
+  removeClass(cls) {
+    return this.each(function (ele) {
+      removeClass(ele, cls);
+    });
+  },
+  hasClass(cls) {
+    var ret = [];
+    this.each(function (ele) {
+      ret.push(hasClass(ele, cls));
+    });
+
+    return ret.every(function (ele) {
+      return ele;
+    });
+  },
+  css() {
+
+  },
+  merge//类数组合并
+});
+
+Jquery.fn.init.prototype = Jquery.fn;
+
+const $ = function (ele) {
+  return new Jquery.fn.init(ele);
 }
+
+export default $
