@@ -1,16 +1,17 @@
-import utils from "./utils/utils.js"
-import $ from "./utils/dom.js"
-import Log4j from "./utils/log4j.js"
-import WebContextInfo from "./utils/webContextInfo.js"
+import utils from "./utils/utils"
+import $ from "./utils/dom"
+import Log4j from "./utils/log4j"
+import WebContextInfo from "./utils/webContextInfo"
 
 const log4j = new Log4j({
-  level: "warn",
-  appenders: {
-    categoryName: "index.js"
-  },
-  postUrl: "/api/v1/exception"
+    level: "debug",
+    appenders: {
+        categoryName: "index.js"
+    },
+    postUrl: "/api/v1/exception"
 });
-console.log(log4j);
+
+log4j.info("browser detector:", "this browser not support ES6 module ,so it use the bundle.js");
 
 log4j.debug("this is debug level Info");
 log4j.log("this is log level Info");
@@ -29,6 +30,6 @@ window.$ = $;
 window.utils = utils;
 
 export default {
-  $,
-  utils
+    $,
+    utils
 };

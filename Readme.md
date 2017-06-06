@@ -31,7 +31,10 @@ npm install babel-loader -D #babel加载器
 ```
 
 2. 语法检查 ESLint
-3. 模板jade:采用jade方式替代html
+3. 模板jade(更名为pug`哈巴狗`):采用pug方式替代html
+```
+npm  install gulp-pug --save-dev #模板文件
+```
 4. 编译sass:使用scss替代css
 5. 不同时使用：资源打包:webpack
 
@@ -46,3 +49,16 @@ dist 发布目录(压缩合并)
 语法配置
 .jshintrc
 .babelrc
+
+
+### 运行项目
+**生产环境运行**
+- 执行命令:gulp --env product
+- 程序运行环境:ES6编译成ES5
+
+**开发测试环境**
+- 执行命令:gulp
+- 程序运行环境:在支持ES6 module语法的浏览器环境中运行(如chrome cannary 60 或Safari)
+
+
+

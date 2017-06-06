@@ -1,0 +1,29 @@
+<html>
+head 
+    title ES6-practice
+    meta(charset='utf-8')
+    link(type="text/css" rel="stylesheet" href="css/index.css")
+
+body
+    mixin link(href, name)
+        a(href=href)= name
+    .siderBar
+        div
+            h3 component
+            span author: hobo
+        input(type="text",name='agreement',placeholder="搜索关键词")
+        ol(start="0")
+            - var components = [{name: '动画',path:"#/demo/animate" },{name:'工具',path:"#/demo/tools"}]
+            for component in components
+                li: +link(component.path, component.name)
+                //li: a(href=component.path)= #{component.name}
+        .spliter
+    .bodyer(style="overflow:hidden")
+        .container
+            include ./templates/animate
+    br
+    script(type='module').
+        import Component from './main.js';
+    script(type='text/javascript',src="index.js",defer,nomodule)
+    script(type='text/javascript').
+        console.log("测试使用pug语法,module 默认延迟")
