@@ -2,7 +2,9 @@
 head 
     title ES6-practice
     meta(charset='utf-8')
+    meta(name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no")
     link(type="text/css" rel="stylesheet" href="css/index.css")
+    link(type="text/css" rel="stylesheet" href="css/main.css")
 
 body
     mixin link(href, name)
@@ -20,8 +22,7 @@ body
         .spliter
     .bodyer(style="overflow:hidden")
         .container
-            include ./templates/animate
-    br
+            include ./templates/gridsystem
     script(type='module').
         import Component from './main.js';
     script(type='text/javascript',src="index.js",defer,nomodule)

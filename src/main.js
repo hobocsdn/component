@@ -67,7 +67,7 @@ class Component {
 };
 
 
-var R = new Router();
+const R = new Router();
 
 R.route('/', function() {
     log4j.debug("this is home page");

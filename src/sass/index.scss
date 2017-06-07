@@ -1,0 +1,26 @@
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+@import "variables";
+@import "grid";
+
+/*mixin*/
+
+@mixin clearfix() {
+    &::after {
+        display: block;
+        content: "";
+        clear: both;
+    }
+}
+
+.clearfix {
+    @include clearfix();
+}
+
+// Grid containers
+//
+// Define the maximum width of `.container` for different screen sizes.

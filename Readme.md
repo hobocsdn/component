@@ -11,8 +11,11 @@ npm install webpack
 npm install style-loader -D
 npm install css-loader -D
 
+
+
 npm install gulp - D
 npm install gulp-load-plugins gulp-plumber gulp-babel -D
+npm install gulp-uglify gulp-sass gulp-sourcemaps gulp-eslint -D
 ```
 
 - npm run build # 创建一个服务器的同时，监听目录下 的.css/.html/.js的文件变化情况
@@ -23,20 +26,39 @@ npm install gulp-load-plugins gulp-plumber gulp-babel -D
 ### ES6 开发环境脚手架搭建
 开发组合：es6 + scss + jade + webpack + gulp
          javascript + css + html + webpack + node
-1. 编译ES6=>ES5  
+
+1. gulp使用ES6语法
+- 升级gulp版本 `gulp -v` ==> version>3.9
+- 安装babel-core 和 babel-preset-es2015 转换ES6代码 `npm install babel-core babel-preset-es2015 --save-dev`
+- 创建.babelrc 文件来使用es2015 preset
+
 ```
-npm  install babel-core -D  #后台编译babel工具
-npm install babel-preset-es2015 -D  #babel对ES2015的预设
-npm install babel-loader -D #babel加载器
+{
+  "presets": ["es2015"]
+}
 ```
 
-2. 语法检查 ESLint
-3. 模板jade(更名为pug`哈巴狗`):采用pug方式替代html
+- 修改gulp.js 名字为 gulpfile.babel.js `mv gulpfile.js gulpfile.babel.js`
+- 在gulpfile.babel.js 使用ES6语法
+- 控制台 运行 gulp  `task`
+
+
+2. 编译ES6=>ES5  + 打包
+browserify+babelify+vinylSource
+```
+
+
+```
+
+3. 语法检查 ESLint
+4. 模板jade(更名为pug`哈巴狗`):采用pug方式替代html
+
 ```
 npm  install gulp-pug --save-dev #模板文件
 ```
-4. 编译sass:使用scss替代css
-5. 不同时使用：资源打包:webpack
+
+5. 编译sass:使用scss替代css
+6. 不同时使用：资源打包:webpack
 
 ### 目录文件说明
 gulpfile 入口:
@@ -47,7 +69,6 @@ src 生产目录
 dist 发布目录(压缩合并)
 
 语法配置
-.jshintrc
 .babelrc
 
 
