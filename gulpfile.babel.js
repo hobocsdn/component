@@ -101,7 +101,9 @@ gulp.task('pug', () => {
         .pipe($.pug({
             pretty: true
         }))
-        .pipe(gulp.dest('./src/'));
+        .pipe(gulp.dest('./src/'))
+        .pipe(reload({ stream: true }));
+
 });
 
 const styles = {

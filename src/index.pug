@@ -20,7 +20,8 @@ body
                 li: +link(component.path, component.name)
                 //li: a(href=component.path)= #{component.name}
         .spliter
-    .bodyer(style="overflow:hidden")
+    .bodyer
+        div(style="width:200px;height:200px;padding:10px;margin:10px;background:red;border:10px solid;")
         .container
             include ./templates/gridsystem
     script(type='module').

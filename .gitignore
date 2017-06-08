@@ -3,4 +3,6 @@ dist/
 .tmp/
 npm-debug.log*
 src/index.html
-src/css/*.*
+scss/
+package-lock.json
+src/css/index.css

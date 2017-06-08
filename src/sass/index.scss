@@ -1,11 +1,14 @@
 *,
 *::before,
 *::after {
-    box-sizing: inherit;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 @import "variables";
 @import "grid";
+@import "fontsize";
 
 /*mixin*/
 
