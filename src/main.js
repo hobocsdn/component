@@ -10,7 +10,7 @@ import $ from "./utils/dom.js"
 import Log4j from "./utils/log4j.js"
 import WebContextInfo from "./utils/webContextInfo.js"
 import Router from "./utils/router.js"
-
+import jade from './utils/jade.js';
 const log4j = new Log4j({
     level: "debug",
     appenders: {
@@ -19,8 +19,6 @@ const log4j = new Log4j({
     postUrl: "/api/v1/exception"
 });
 console.log(log4j);
-
-console.log("");
 
 log4j.info("browser detector:", "----the browser support module---");
 
@@ -59,7 +57,7 @@ class Component {
             e.appendChild(t);
     }
     register() {
-        components.map(function(item) {
+        components.map(function (item) {
             this[item.name] = "";
         });
     }
@@ -69,22 +67,80 @@ class Component {
 
 const R = new Router();
 
-R.route('/', function() {
+R.route('/', function () {
     log4j.debug("this is home page");
 });
-R.route('/demo/animate', function() {
+R.route('/demo/animate', function () {
     log4j.debug("this is component page:animate");
 });
-R.route('/demo/tools', function() {
+R.route('/demo/tools', function () {
     log4j.debug("this is component page:tools");
 });
 
-R.route('/demo/tools', function() {
+R.route('/demo/tools', (link) => {
+    log4j.debug($(link));
+
     log4j.debug("this is component page:tools cb show agian");
 });
+
 
 export default {
     $,
     utils,
     Component
 };
+
+//jade 
+const jadeCompile = ($el) => {
+    try {
+        let json;
+        let j = $el.next("textarea.json");
+        json = JSON.parse(j.val() || "{}");
+        let val = $el.val();
+        let trimIndent = (val) => {
+            let template = val.split(/\n/);
+            let len = template.length;
+            if (len > 0) {
+                let indent = template[0].match(/^\s+/);
+                if (indent && indent.length) {
+                    val = template.map(function (line) {
+                        return line.replace(indent, "");
+                    }).join("\n");
+                }
+            }
+            return val;
+        }
+        val = trimIndent(val);
+        return jade.compile(val, {
+            pretty: !0,
+            doctype: "5"
+        })(json || {});
+    } catch (l) {
+        log4j.error("[json] " + l.message)
+        return $el.parent(".row").find("textarea.html-output").val("[json] " + l.message),
+            void 0
+    }
+}
+
+try {
+    const jadeToHtml = ($el) => {
+        let html = jadeCompile($el);
+        $el.parent(".row").find("textarea.html-output").val(html.trim());
+    }
+    $("textarea.jade-template").each((elem) => {
+        let $jade = $(elem);
+        jadeToHtml($jade);
+        $jade.on("keyup", function () {
+            jadeToHtml($jade);
+        })
+    });
+
+    $("textarea.json").on("keyup", function () {
+        let html = jadeCompile($(this).prev());
+        log4j.debug(".json:keyup", html);
+        return $(this).parent(".row").find("textarea.html-output").val(html.trim());
+    });
+
+} catch (e) {
+    log4j.error(e.message);
+}

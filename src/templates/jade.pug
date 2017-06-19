@@ -1,0 +1,217 @@
+.col-12(id="/demo/pug")
+    h2="Pug 语法"
+    h3="basics"
+     .row
+        .col-6
+            textarea.size7.jade-template.
+                doctype html
+                html
+                    head
+                        title my jade template
+                    body
+                        h1 Hello \#{name}
+                        h3="id&class"
+            textarea.size1.json.
+                {"name": "Bob"}
+        .col-6        
+            textarea.size9.html-output(readonly)
+    .row
+        .col-6
+            textarea.size4.jade-template.
+                #content
+                    .block
+                    input#bar.foo1.foo2
+        .col-6
+            textarea.size4.html-output(readonly)
+    h3="nesting"
+    .row
+        .col-6
+            textarea.size5.jade-template.
+                ul#books
+                    li
+                        a(href="#book-a") Book A
+                    li
+                        a(href="#book-b") Book B
+        .col-6
+            textarea.size5.html-output(readonly)                 
+    h3="text"
+    .row
+        .col-6
+            textarea.size4.jade-template
+                | p
+                |   | foo bar
+                |   | hello world
+        .col-6        
+            textarea.size4.html-output(readonly)
+    .row    
+        .col-6
+            textarea.size4.jade-template.
+                p.
+                    foo bar
+                    hello world
+        .col-6
+            textarea.size4.html-output(readonly)
+    .row    
+        .col-6
+            textarea.size4.jade-template.
+                h1 foo
+                h2= book.name
+                h3 "\#{book.name}" for \#{book.price} €
+            textarea.size1.json.
+                {"book": {"name": "Hello", "price": 12.99}}
+        .col-6
+            textarea.size4.html-output(readonly)        
+    h3="variables"        
+    .row
+        .col-6
+            textarea.size2.jade-template.
+                - var foo = "hello world"
+                h1= foo
+        .col-6
+            textarea.size2.html-output(readonly)
+    .row
+        .col-6
+            textarea.size2.jade-template.
+                - var foo = book.name + " world"
+                h1= foo
+            textarea.size1.json.
+                {"book": {"name": "Hello"}}    
+        .col-6
+            textarea.size2.html-output(readonly)   
+    h3="Attributes"
+        .row
+            .col-6
+                textarea.size1.jade-template.
+                    input(type="text", placeholder="your name")
+            .col-6
+                textarea.size1.html-output(readonly)   
+        .row
+            .col-6
+                textarea.size1.jade-template.
+                    input(type=type, value='Hello \#{name}')
+                textarea.size1.json.
+                    {"type": "text", "name": "Bob"}
+            .col-6
+                textarea.size3.html-output(readonly)   
+    h3="Comments"
+        .row
+            .col-6
+                textarea.size2.jade-template.
+                    // single line comment
+                    //- invisible single line comment
+            .col-6
+                textarea.size2.html-output(readonly)          
+        .row
+            .col-6
+                textarea.size4.jade-template.
+                    <!--[if IE 8]>
+                    script(src='/ie.js')
+                    <![endif]-->
+            .col-6
+                textarea.size4.html-output(readonly)          
+    h3="if & unless"        
+    .row
+        .col-6
+            textarea.size4.jade-template.
+                if name == "Bob" 
+                    h1 Hello Bob 
+                else 
+                    h1 My name is #{name}
+        .col-6
+            textarea.size4.html-output(readonly)
+    .row
+        .col-6
+            textarea.size2.jade-template.
+                unless errors
+                    p no errors
+            textarea.size1.json.
+                {"errors": false}
+        .col-6
+            textarea.size2.html-output(readonly)       
+    h3="for & each"
+    .row
+        .col-6
+            textarea.size3.jade-template.
+                select
+                    each book, i in books
+                        option(value=i) Book \#{book}
+            textarea.size1.json.
+                {"books": ["A", "B", "C"]}
+        .col-6
+            textarea.size5.html-output(readonly) 
+    .row
+        .col-6
+            textarea.size5.jade-template.
+                ul
+                    for book in books
+                        li= book
+                    else
+                        li sorry, no books!
+            textarea.size1.json.
+                {"books": []}
+        .col-6
+            textarea.size6.html-output(readonly) 
+    h3="case"
+    .row
+        .col-6
+            textarea.size7.jade-template.
+                case name
+                    when "Bob"
+                        p Hi Bob!
+                    when "Alice"
+                        p Howdy Alice!
+                    default
+                        p Hello \#{name}!
+            textarea.size1.json.
+                {"name": "Tim"}
+        .col-6
+            textarea.size9.html-output(readonly) 
+    h3="mixin & mixin support block"
+    .row
+        .col-6
+            textarea.size6.jade-template.
+                mixin book(name, price)
+                    li \#{name} for \#{price} €
+                
+                ul#books
+                    +book("Book A", 12.99)
+                    +book("Book B", 5.99)
+        .col-6
+            textarea.size6.html-output(readonly)
+    .row
+        .col-6
+            textarea.size6.jade-template.
+                mixin jadeTemplate(title,json)
+                    h3=title
+                    .row
+                        .col-6
+                            textarea.size6.jade-template
+                                block
+                            textarea.size1.json.
+                                \!{json}
+                        .col-6
+                            textarea.size6.html-output(readonly)
+                +jadeTemplate("jade template",'{"name": "Tim"}')
+                   |ul
+                   |    li
+        .col-6
+            textarea.size6.html-output(readonly)  
+    mixin jadeTemplate(title,json)
+        h3=title
+        .row
+            .col-6
+                textarea.size5.jade-template
+                    block
+                textarea.size1.json #{json}
+            .col-6
+                textarea.size6.html-output(readonly)
+    +jadeTemplate("jade template",'{"name":"Tim"}').
+        if name == "Bob" 
+            h1 Hello Bob 
+        else 
+            h1 My name is \#{name}
+
+    +jadeTemplate("block",'{"name":"Tim"}').
+    +jadeTemplate("extends",'{"name":"Tim"}').
+    +jadeTemplate("include",'{"name":"Tim"}').
+             

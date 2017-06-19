@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 head 
     title ES6-practice
@@ -15,17 +16,35 @@ body
             span author: hobo
         input(type="text",name='agreement',placeholder="搜索关键词")
         ol(start="0")
-            - var components = [{name: '动画',path:"#/demo/animate" },{name:'工具',path:"#/demo/tools"}]
+            - 
+                var components = [{
+                        name: '动画',
+                        path:"#/demo/animate" 
+                    },
+                    {
+                        name:'工具',
+                        path:"#/demo/tools"
+                    },
+                    {
+                        name:'网格系统',
+                        path:"#/demo/gridsystem"
+                    },
+                    {
+                        name:'pug模板引擎',
+                        path:"#/demo/pug"
+                    }]
             for component in components
                 li: +link(component.path, component.name)
                 //li: a(href=component.path)= #{component.name}
         .spliter
     .bodyer
-        div(style="width:200px;height:200px;padding:10px;margin:10px;background:red;border:10px solid;")
-        .container
+        section.container
             include ./templates/gridsystem
+        section.container
+                include ./templates/jade
     script(type='module').
         import Component from './main.js';
+        
     script(type='text/javascript',src="index.js",defer,nomodule)
     script(type='text/javascript').
         console.log("测试使用pug语法,module 默认延迟")

@@ -157,75 +157,167 @@ const merge = function (first, second) {
 class Jquery {
   constructor() {
   }
-  init(selector) {
-    this.length = 0;
-    if (!selector) {
-      return this;
-    } else {
-      let elem = document.querySelectorAll(selector);
-      if (elem !== null) {
-        this.merge(this, elem);
-        return this;
-      }
-    }
-  }
-}
-
-Jquery.fn = Jquery.prototype
-
-Object.assign(Jquery.fn, {
   each(cb) {
     let self = this;
     let len = this.length, i = 0;
     for (; i < len; i++) {
-      cb.call(this, this[i]);
+      cb.call(this[i], this[i]);
     }
-  },
+  }
   on(event, handler) {
-    return this.each(function (ele) {
-      on(ele, event, handler);
+    return this.each(function (elem) {
+      on(elem, event, handler);
     });
-  },
+  }
   off(event, handler) {
-    return this.each(function (ele) {
-      on(ele, event, handler);
+    return this.each(function (elem) {
+      on(elem, event, handler);
     });
-  },
+  }
   once(event, handler) {
-    return this.each(function (ele) {
-      once(ele, event, handler);
+    return this.each(function (elem) {
+      once(elem, event, handler);
     });
-  },
+  }
   addClass(event, handler) {
-    return this.each(function (ele) {
-      addClass(ele, event, handler);
+    return this.each(function (elem) {
+      addClass(elem, event, handler);
     });
-  },
+  }
   removeClass(cls) {
-    return this.each(function (ele) {
-      removeClass(ele, cls);
+    return this.each(function (elem) {
+      removeClass(elem, cls);
     });
-  },
+  }
   hasClass(cls) {
     var ret = [];
-    this.each(function (ele) {
-      ret.push(hasClass(ele, cls));
+    this.each((elem) => {
+      ret.push(hasClass(elem, cls));
     });
 
-    return ret.every(function (ele) {
-      return ele;
+    return ret.every(function (elem) {
+      return elem;
     });
-  },
-  css() {
+  }
+  css(attrName, attrValue) {
+    let ret = null;
+    this.each((elem) => {
+      if (typeof attrName === 'object') {
+        for (var key in attrName) {
+          key = camelCase(key);
+          elem.style[key] = attrName[key];
+        }
+      } else if (attrValue) {
+        elem.style[camelCase(attrName)] = attrValue;
+      } else {
+        ret = window.getComputedStyle(elem)[attrName];
+      }
+    });
+    return ret ? ret : this;
+  }
+  val(o) {
+    if (o === undefined) {
+      let elem = this[0];
+      if (elem && elem.nodeType === 1) {
+        return elem.value;
+      }
+      return undefined;
+    }
+    return this.each((elem) => {
+      elem.value = o;
+    });
+  }
 
-  },
-  merge//类数组合并
-});
+  next() {
+    let ret = [];
+    this.each((elem) => {
+      let cur = elem, dir = "nextSibling";
+      while ((cur = cur[dir]) && cur.nodeType !== 1) { }
+      cur && ret.push(cur);
+    });
+    return $(ret);
+  }
+  prev() {
+    let ret = [];
+    this.each((elem) => {
+      let cur = elem, dir = "previousSibling";
+      while ((cur = cur[dir]) && cur.nodeType !== 1) { }
+      cur && ret.push(cur);
+    });
+    return $(ret);
+  }
+  parent(selector) {
+    selector = selector && (selector.replace(/\.|#/g, ''));
+    var parent = this[0].parentNode;
+    while (parent && selector) {
+      if (parent.className && (parent.className.indexOf(selector) > -1 || selector === parent.id)) {
+        return $(parent)
+      }
+      parent = parent.parentNode;
+    }
+    return $(parent);
+  }
+  siblings(elem) {
+    let brother = (n, elem) => {
+      var matched = [];
+      for (; n; n = n.nextSibling) {
+        if (n.nodeType === 1 && n !== elem) {
+          matched.push(n);
+        }
+      }
+      return matched;
+    };
+    return $(brother($(this[0].parentNode.firstChild), elem));
+  }
+  before(dom) {
+    this.each(function (elem) {
+      elem.parentNode.insertBefore(dom, elem);
+    });
+    return this;
+  }
 
-Jquery.fn.init.prototype = Jquery.fn;
+  text(val) {
+    return this[0].textContent = val;
+  }
+  find(selector) {
+    let elem = this[0].querySelectorAll(selector);
+    return $(elem);
+  }
+};
 
-const $ = function (ele) {
-  return new Jquery.fn.init(ele);
+
+class Dom extends Jquery {
+  constructor(selector) {
+    super();
+    this.length = 0;
+
+    if (typeof selector === 'string') {
+      var elem = document.querySelectorAll(selector);
+      var i, len = elem ? elem.length : 0;
+      merge(this, elem);
+      this.selector = selector || '';
+      return this;
+    } else if (selector instanceof NodeList) {
+      var i, len = selector ? selector.length : 0;
+      merge(this, selector);
+      this.length = len;
+      this.selector = '';
+    } else if (selector && selector.nodeType) {
+      this.context = this[0] = selector;
+      this.length = 1;
+      this.selector = selector || '';
+    }
+    return merge(this, selector || []), this;
+  }
+  show() {
+    this.css({ "dispay": "block" });
+  }
+  hide() {
+    this.css({ "dispay": "none" });
+  }
 }
 
+const $ = function (elem) {
+  return new Dom(elem);
+}
 export default $
