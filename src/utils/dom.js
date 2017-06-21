@@ -166,7 +166,10 @@ class Jquery {
   }
   on(event, handler) {
     return this.each(function (elem) {
-      on(elem, event, handler);
+      let events = event.split(/\s+/g);
+      events.forEach(function (e) {
+        on(elem, e, handler);
+      });
     });
   }
   off(event, handler) {

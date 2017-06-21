@@ -14,7 +14,7 @@ import jade from './utils/jade.js';
 const log4j = new Log4j({
     level: "debug",
     appenders: {
-        categoryName: "index.js"
+        categoryName: "main.js"
     },
     postUrl: "/api/v1/exception"
 });
@@ -144,3 +144,35 @@ try {
 } catch (e) {
     log4j.error(e.message);
 }
+
+let mouseEvent = ["mouseover", "mouseenter", "mousemove", "mousedown", "click", "mouseup", "mouseleave", "mouseout", "contextmenu", "dblclick"].join(" ")
+
+//mouse event
+//鼠标移入 mouseover ==> mouseenter ==>  mousemove+
+$(".mouse-in").on("mouseover mouseenter mousemove", function (e) {
+    e = e || event;
+    log4j.debug("mouseEvent----", e.type);
+    // if (e.type === "mouseover") {
+    //     log4j.debug("mouseover --- before:", e.target, " --after:", e.relatedTarget);
+    // }
+    var $output = $(".mouse-in").parent(".row").find("textarea.html-output");
+    var text = e.type === "mouseover" ? "" : $output.val();
+    $output.val(text + "\n" + e.type);
+});
+
+//鼠标移出    mousemove+ ==>mouseout==>mouseleave
+$(".mouse-out").on("mouseover mouseenter mousemove mouseleave mouseout", function (e) {
+    e = e || event;
+    log4j.debug("mouseEvent----", e.type);
+    var $output = $(".mouse-out").parent(".row").find("textarea.html-output");
+    var text = e.type === "mouseover" ? "" : $output.val();
+    $output.val(text + "\n" + e.type);
+});
+
+$(".mouse-click").on(mouseEvent, function (e) {
+    e = e || event;
+    log4j.debug("mouseEvent----", e.type);
+    var $output = $(".mouse-click").parent(".row").find("textarea.html-output");
+    var text = e.type === "mouseover" ? "" : $output.val();
+    $output.val(text + "\n" + e.type);
+});

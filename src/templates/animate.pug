@@ -1,0 +1,27 @@
+.col-12(id="/demo/animate",style="position:relative;")
+    h2="鼠标事件的理解"
+    h3="鼠标移入"
+        .row
+            .col-6
+                .mouse-in(style="background-color:grey;padding:20px 10px"). 
+                    鼠标事件移入检测，查看右侧输出 mouseover ==> mouseenter ==>  mousemove+
+            .col-6
+                textarea.size6.html-output(readonly)
+    h3="鼠标移出"
+        .row
+            .col-6
+                .mouse-out(style="background-color:grey;padding:20px 10px"). 
+                    鼠标事件移出检测，查看右侧输出(前提鼠标已经移入，自动过滤) mousemove+ ==>mouseout==>mouseleave
+            .col-6
+                textarea.size6.html-output(readonly)
+    h3="单击事件"
+        .row
+            .col-6
+                .mouse-click(style="background-color:grey;padding:20px 10px"). 
+                    鼠标单击，查看右侧输出  mouseover ==>mouseenter==>mousemove+==>mousedown==>mouseup==>click==>==>mouseout==>mouseleave
+            .col-6
+                textarea.size6.html-output(readonly)            
+    h2="拖拽实现"
+    div.drag-box(style="position: absolute;padding: 5px;background: #f0f3f9;-moz-box-shadow: 2px 2px 4px #666666;-webkit-box-shadow: 2px 2px 4px #666666;")
+         div.drag-bar(style="line-height: 24px;background: #beceeb;border-bottom: 1px solid #a0b3d6;padding-left: 5px;cursor: move;") 拖拽
+         div.drag-content(style="width: 420px;height: 250px;padding: 10px 5px;") 内容...   
