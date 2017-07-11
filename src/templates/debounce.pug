@@ -1,0 +1,26 @@
+.col-12(id="/demo/debouce_throttle")
+    h2="防抖动和节流阀"
+    h3="Debounce 实例:调整div大小"
+    .row
+        div.box.bg-pink(style="position:relative;top:20px;left:20px;width:80%;margin-bottom:20px;border:1px solid #d3d3d3")
+            div.bg-gray(style="line-height: 24px;border-bottom: 1px solid #a0b3d6;padding-left: 5px;cursor: move;") 拖拽调整div大小的例子
+            div.bg-white(style="height:200px;") 内容...
+            div.r-resize(style="position:absolute;top:0;right:0px;width:10px;height:100%;cursor:ew-resize;")     
+            div.b-resize(style="position:absolute;bottom:0px;height:10px;width:100%;cursor:ns-resize;")     
+            div.rb-resize(style="position:absolute;bottom:0px;right:0px;width:10px;height:10px;cursor:nwse-resize;")
+
+    h3="Debounce 实例:基于 AJAX 请求的自动完成功能，通过 keypress 触发"
+    h3="节流阀throttle实例:无限滚动"
+    .row.throttle
+        div(style="height:266px;position:relative;width:50%;overflow:hidden;border:15px solid #d3d3d3;")
+            div.throttle-box.bd-blue(style="position:absolute;top:30px;width:30px;height:100px;") Scroll with throttle
+            div.throttle-box.bd-blue(style="position:absolute;top:130px;width:30px;height:100px;") Scroll with throttle
+            div.throttle-scroll-container(style="height:236px;overflow:auto;")
+                div(style="min-height:1000vh;")
+    h3="requestAnimationFrame实例:"
+    .row.requestAnimationFrame
+        div(style="height:266px;position:relative;width:50%;overflow:hidden;border:15px solid #d3d3d3;")
+            div.raf-box.bd-green(style="position:absolute;top:30px;width:100px;height:100px;") Scroll with rAF
+            div.raf-box.bd-green(style="position:absolute;top:130px;width:100px;height:100px;") Scroll with rAF
+            div.raf-scroll-container(style="height:236px;overflow:auto;")
+                div(style="min-height:1000vh;") 

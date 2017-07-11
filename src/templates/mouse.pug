@@ -1,0 +1,37 @@
+.col-12(id="/demo/mouse",style="position:relative;")
+    h2="鼠标事件的理解"
+    h3="鼠标移入"
+    .row
+        .col-6
+            .mouse-in.bg-gray(style="padding:20px 10px"). 
+                鼠标事件移入检测，查看右侧输出 mouseover ==> mouseenter ==>  mousemove+
+        .col-6
+            textarea.size6.html-output(readonly)
+    h3="鼠标移出"
+    .row
+        .col-6
+            .mouse-out.bg-gray(style="padding:20px 10px"). 
+                鼠标事件移出检测，查看右侧输出 mousemove+ ==>mouseout ==> mouseleave
+        .col-6
+            textarea.size6.html-output(readonly)
+    h3="单击事件"
+    .row
+        .col-6
+            .mouse-click.bg-gray(style="padding:20px 10px") 
+                | 鼠标单击，查看右侧输出  mouseover ==> mouseenter ==> mousemove+ 
+                | ==> mousedown ==> mouseup ==> click ==> mousemove+ ==> mouseout ==> mouseleave
+        .col-6
+            textarea.size6.html-output(readonly)
+    h3="嵌套元素移入移出"
+    .row
+        .col-6
+            .mouse-parent-sub-in-out.bg-gray(style="padding:20px 10px") 
+                    //- | 从父级元素进入子级元素时:
+                    //- |  mousemove+==> 父元素mouseout ==>(子元素的mouseover) 
+                    //- |  ==>父元素的 mouseover ==> mousemove+ 
+                    .sub.bg-green
+                        |  从子级元素进入父级元素时：
+                        |  (子元素的mouseout) ==> 父元素mouseout 
+                        |  ==> 子级元素的mouseleave ==> mouseover
+        .col-6
+            textarea.size6.html-output(readonly)               

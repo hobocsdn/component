@@ -32,18 +32,25 @@ body
                     {
                         name:'pug模板引擎',
                         path:"#/demo/pug"
+                    },
+                    {
+                        name:'鼠标事件',
+                        path:"#/demo/mouse"
                     }]
             for component in components
                 li: +link(component.path, component.name)
-                //li: a(href=component.path)= #{component.name}
-        .spliter
+                //li: a(href=component.path)= #{component.name}         
     .bodyer
         section.container
             include ./templates/gridsystem
         section.container
                 include ./templates/jade
         section.container
-                include ./templates/animate
+                include ./templates/mouse
+        section.container
+                include ./templates/drag
+        section.container
+                include ./templates/debounce                
     script(type='module').
         import Component from './main.js';
         

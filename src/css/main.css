@@ -110,3 +110,24 @@ textarea{
 textarea.jade-error {
     color: red;
 }
+
+.drag-list li{
+    line-height: 1.4;
+    padding:10px;
+    margin-bottom:5px;
+    font-size: 18px;
+    border:2px dashed #ccc;
+    background-color:#eee;
+    cursor:move;
+    list-style: none
+}
+
+.dustbin {
+    line-height: 1.4;
+    background-color: gray;
+    font-size: 36px;
+    font-family: "微软雅黑", "Yahei Mono";
+    text-align: center;
+    text-shadow: -1px -1px #bbb;
+    height: 260px;
+}

@@ -10,7 +10,10 @@ import $ from "./utils/dom.js"
 import Log4j from "./utils/log4j.js"
 import WebContextInfo from "./utils/webContextInfo.js"
 import Router from "./utils/router.js"
+import Drag from "./utils/drag.js"
 import jade from './utils/jade.js';
+import { debounce, throttle, raf } from './utils/debounce.js';
+
 const log4j = new Log4j({
     level: "debug",
     appenders: {
@@ -145,7 +148,39 @@ try {
     log4j.error(e.message);
 }
 
-let mouseEvent = ["mouseover", "mouseenter", "mousemove", "mousedown", "click", "mouseup", "mouseleave", "mouseout", "contextmenu", "dblclick"].join(" ")
+
+
+class MouseEvent {
+    constructor() {
+        this.events = [];
+        this.prevEvent = null;
+    }
+    fireEvent(type) {
+        let len = this.events.length;
+        if (this.prevEvent === type) {
+            let e = this.events[len - 1];
+            e.times++
+        } else {
+            this.events.push({
+                eventType: type,
+                times: 1
+            });
+        }
+        this.prevEvent = type;
+    }
+    getEvents() {
+        let output = this.events.map((item) => {
+            return `${item.eventType} : ${item.times}`;
+        });
+        return output.join("\n");
+    }
+    reset() {
+        this.events = [];
+        this.prevEvents = null;
+    }
+}
+
+let mouseEvent = new MouseEvent();
 
 //mouse event
 //鼠标移入 mouseover ==> mouseenter ==>  mousemove+
@@ -156,8 +191,11 @@ $(".mouse-in").on("mouseover mouseenter mousemove", function (e) {
     //     log4j.debug("mouseover --- before:", e.target, " --after:", e.relatedTarget);
     // }
     var $output = $(".mouse-in").parent(".row").find("textarea.html-output");
-    var text = e.type === "mouseover" ? "" : $output.val();
-    $output.val(text + "\n" + e.type);
+    if (e.type === "mouseover") {
+        mouseEvent.reset();
+    }
+    mouseEvent.fireEvent(e.type);
+    $output.val(mouseEvent.getEvents());
 });
 
 //鼠标移出    mousemove+ ==>mouseout==>mouseleave
@@ -165,14 +203,90 @@ $(".mouse-out").on("mouseover mouseenter mousemove mouseleave mouseout", functio
     e = e || event;
     log4j.debug("mouseEvent----", e.type);
     var $output = $(".mouse-out").parent(".row").find("textarea.html-output");
-    var text = e.type === "mouseover" ? "" : $output.val();
-    $output.val(text + "\n" + e.type);
+    if (e.type === "mouseover") {
+        mouseEvent.reset();
+    }
+    mouseEvent.fireEvent(e.type);
+    $output.val(mouseEvent.getEvents());
 });
 
-$(".mouse-click").on(mouseEvent, function (e) {
+
+let events = ["mouseover", "mouseenter", "mousemove", "mousedown", "click", "mouseup", "mouseleave", "mouseout", "contextmenu", "dblclick"].join(" ")
+$(".mouse-click").on(events, (e) => {
     e = e || event;
     log4j.debug("mouseEvent----", e.type);
     var $output = $(".mouse-click").parent(".row").find("textarea.html-output");
-    var text = e.type === "mouseover" ? "" : $output.val();
-    $output.val(text + "\n" + e.type);
+    if (e.type === "mouseover") {
+        mouseEvent.reset();
+    }
+    mouseEvent.fireEvent(e.type);
+    $output.val(mouseEvent.getEvents());
+});
+
+$(".mouse-parent-sub-in-out").on(events, (e) => {
+    e = e || event;
+    log4j.debug("mouseEvent----", e.type);
+    let $output = $(".mouse-parent-sub-in-out").parent(".row").find("textarea.html-output");
+    let isParent = $(e.target).hasClass("mouse-parent-sub-in-out");
+    let type;
+    if (e.type === "mouseenter" && isParent) {
+        mouseEvent.reset();
+        mouseEvent.fireEvent("parent:moouseover");
+    }
+    if (isParent && !type) {
+        type = "parent:" + e.type;
+    } else {
+        type = "sub:" + e.type;
+    }
+    mouseEvent.fireEvent(type);
+    $output.val(mouseEvent.getEvents());
+});
+
+var dragBar = new Drag($(".drag-bar"), $(".drag-box"), () => {
+    //mousemove 事件回调
+    log4j.info("move");
+});
+
+let target = null;
+$(".drag-list>li").on("selectstart", function (ev) {
+    return false;
+});
+$(".drag-list li").on("dragstart", function (ev) {
+    ev.dataTransfer.effectAllowed = "move";
+    ev.dataTransfer.setData("text", $(this).text());
+    ev.dataTransfer.setDragImage(ev.target, 0, 0);
+    target = ev.target;
+});
+$(".drag-list li").on("dragend", function () {
+    target = null;
+});
+//目标元素
+$(".dustbin").on("dragover", function (e) {
+    e.preventDefault();
+    return true;
+});
+$(".dustbin").on("dragenter", function () {
+    $(this).css("color", "#fff");
+});
+$(".dustbin").on("drop", function () {
+    if (target) {
+        target.parentNode.removeChild(target);
+    }
+    $(this).css("color", "#000");
+});
+
+
+//函数防抖debounce与节流throttle(频率控制)
+let dom1 = $(".throttle-box");
+$(".throttle-scroll-container").on("scroll", throttle(function (e) {
+    let width = e.target.scrollTop / 10 + 100 + "px";
+    dom1.css("width", width);
+}, 10, true, false));
+
+let dom2 = $(".raf-box");
+$(".raf-scroll-container").on("scroll", function (e) {
+    raf.requestAnimationFrame(function () {
+        let width = e.target.scrollTop / 10 + 100 + "px";
+        dom2.css("width", width);
+    });
 });

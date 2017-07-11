@@ -121,22 +121,25 @@ function removeClass(el, cls) {
   }
 };
 
-const css = function (element, styleName, value) {
-  if (!element || !styleName) return;
-
-  if (typeof styleName === 'object') {
-    for (var prop in styleName) {
-      if (styleName.hasOwnProperty(prop)) {
-        css(element, prop, styleName[prop]);
+const css = function (element, attrName, attrValue) {
+  if (!element || !attrName) return;
+  if (typeof attrName === 'object') {
+    for (var prop in attrName) {
+      if (attrName.hasOwnProperty(prop)) {
+        css(element, prop, attrName[prop]);
       }
     }
-  } else {
-    styleName = camelCase(styleName);
-    if (styleName === 'opacity' && ieVersion < 9) {
-      element.style.filter = isNaN(value) ? '' : 'alpha(opacity=' + value * 100 + ')';
+  } else if (attrValue !== undefined) {
+    attrName = camelCase(attrName);
+    if (attrName === 'opacity' && ieVersion < 9) {
+      element.style.filter = isNaN(attrValue) ? '' : 'alpha(opacity=' + attrValue * 100 + ')';
     } else {
-      element.style[styleName] = value;
+      element.style[attrName] = attrValue;
     }
+  } else {
+    let currenStyle = element.currentStyle ? element.currentStyle : document.defaultView.getComputedStyle(element, false);
+    attrName = camelCase(attrName);
+    return currenStyle[attrName];
   }
 };
 
@@ -174,12 +177,27 @@ class Jquery {
   }
   off(event, handler) {
     return this.each(function (elem) {
-      on(elem, event, handler);
+      off(elem, event, handler);
     });
   }
   once(event, handler) {
     return this.each(function (elem) {
       once(elem, event, handler);
+    });
+  }
+  delegate(selector, event, handler) {
+    if (!this.length) {
+      return "parent can be not null";
+    }
+    let handle = (e) => {
+      let evt = window.event ? window.event : e;
+      let target = evt.target || evt.srcElement;
+      if (target.id === selector || target.className.indexOf(selector) || target.tagName === selector) {
+        handler.call(target);
+      }
+    };
+    return this.each(function (elem) {
+      on(elem, event, handle);
     });
   }
   addClass(event, handler) {
@@ -205,16 +223,7 @@ class Jquery {
   css(attrName, attrValue) {
     let ret = null;
     this.each((elem) => {
-      if (typeof attrName === 'object') {
-        for (var key in attrName) {
-          key = camelCase(key);
-          elem.style[key] = attrName[key];
-        }
-      } else if (attrValue) {
-        elem.style[camelCase(attrName)] = attrValue;
-      } else {
-        ret = window.getComputedStyle(elem)[attrName];
-      }
+      ret = css(elem, attrName, attrValue);
     });
     return ret ? ret : this;
   }
@@ -278,9 +287,12 @@ class Jquery {
     });
     return this;
   }
-
   text(val) {
-    return this[0].textContent = val;
+    if (val) {
+      return this[0].textContent = val;
+    } else {
+      return this[0].textContent;
+    }
   }
   find(selector) {
     let elem = this[0].querySelectorAll(selector);

@@ -6,23 +6,20 @@
     box-sizing: border-box;
 }
 
+//mixin
+@import "mixin";
+
+//variables;
+@import "colors";
 @import "variables";
+
+// Core CSS
+
 @import "grid";
+@import "reboot";
+
+@import "type";
 @import "fontsize";
-
-/*mixin*/
-
-@mixin clearfix() {
-    &::after {
-        display: block;
-        content: "";
-        clear: both;
-    }
-}
-
-.clearfix {
-    @include clearfix();
-}
 
 // Grid containers
 //

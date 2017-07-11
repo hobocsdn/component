@@ -1,0 +1,14 @@
+.col-12(id="/demo/drag")
+    h3="拖拽"
+    .row
+        .col-4
+            .dustbin.
+                垃圾箱
+        ul.drag-list.col-8
+            - for(var i=0;i<6;i++)
+                li(draggable="true") 列表 #{i}
+    .row            
+        div.bg-pink(style="position: relative; overflow: hidden;width:80%;height:200px;")
+            div.drag-box(style="position:absolute;top:20px;left:20px;z-index:99")
+                div.drag-bar.bg-gray(style="line-height: 24px;border-bottom: 1px solid #a0b3d6;padding-left: 5px;cursor: move;") 拖拽
+                div.drag-content.bg-white(style="width: 220px;height: 250px;padding: 10px 5px;") 内容...     
